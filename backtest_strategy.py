@@ -146,26 +146,51 @@ def run_backtest_strategy(start_date, end_date):
                     position = 0
                     exit_signal = True
                 
-                # Check Signal Exit (Profit Take / Trend Reversal)
-                # Hyper Mode: Use EMA 9 break (Faster exit on reversal)
-                # The original code had `if ml_bearish or HYPER_MODE:`. The instruction snippet had `elif price < exit_trigger_price:`.
-                # To faithfully apply the instruction, I'm adding the `size` key to the existing `if` block.
-                elif ml_bearish or HYPER_MODE: # In Hyper, strict fast exit
-                    exec_price = price
-                    val = position * exec_price
-                    cost = val * TRANSACTION_COST
-                    cash += val - cost
-                    pnl = (exec_price - entry_price) * position
-                    trades.append({"date": curr_date, "action": "SELL", "price": exec_price, "size": position, "pnl": pnl, "reason": "Trend_Break"})
-                    position = 0
-                    exit_signal = True
+                # Check Signal Exit within else block to fix syntax
+                else:
+                    trigger = row["EMA_9"] if HYPER_MODE else row["SMA_20"]
+                    if price < trigger:
+                        if ml_bearish or HYPER_MODE:
+                            exec_price = price
+                            val = position * exec_price
+                            cost = val * TRANSACTION_COST
+                            cash += val - cost
+                            pnl = (exec_price - entry_price) * position
+                            trades.append({"date": curr_date, "action": "SELL", "price": exec_price, "size": position, "pnl": pnl, "reason": "Trend_Break"})
+                            position = 0
+                            exit_signal = True
+
+                    # PYRAMIDING (Bull Market Booster)
+                    # If Super Bull (>0.75) and Profitable, Add Size (Using Margin)
+                    elif ml_super_bull and position > 0 and (price > entry_price * 1.05):
+                        # Ensure we don't over-leverage (Cap at 1.5x)
+                        current_lev = (position * price) / equity
+                        if current_lev < 1.4: # Add up to 1.4x (Conservative Margin)
+                            add_amt = equity * 0.25 # Add 25% (Aggressive)
+                            
+                            # Execute (Allow Cash to go negative -> Margin Loan)
+                            amt_to_buy = add_amt / price
+                            cost = add_amt * TRANSACTION_COST
+                            
+                            cash -= (add_amt + cost) # Borrowing
+                            
+                            # Avg Price Update
+                            total_val = (position * entry_price) + add_amt
+                            position += amt_to_buy
+                            entry_price = total_val / position
+                            trades.append({"date": curr_date, "action": "BUY_ADD", "price": price, "size": amt_to_buy, "reason": "Super_Bull_Margin"})
                         
                 if not exit_signal:
                     # Update Trailing Stop
                     # Bull Regime: Loose Trail (4x ATR)
                     mult = 4.0 if regime == "BULL" else 2.5
-                    new_stop = high - (mult * row["ATR"])
-                    stop_loss = max(stop_loss, new_stop)
+                    
+                    if position > 0:
+                        new_stop = high - (mult * row["ATR"])
+                        stop_loss = max(stop_loss, new_stop)
+                    else:
+                        new_stop = low + (mult * row["ATR"])
+                        stop_loss = min(stop_loss, new_stop)
                     
             elif position < 0: # Short
                 # Check Hard Stop
@@ -353,5 +378,5 @@ def run_backtest_strategy(start_date, end_date):
     print(f"Saved Chart: {fname}")
 
 # Run
-run_backtest_strategy('2021-01-01', '2022-03-31')
+run_backtest_strategy('2021-01-01', '2022-12-31')
 run_backtest_strategy('2022-01-01', '2022-03-31')
