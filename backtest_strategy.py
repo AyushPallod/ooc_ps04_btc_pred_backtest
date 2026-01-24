@@ -290,6 +290,9 @@ def run_backtest_strategy(start_date, end_date):
     downside_std = downside.std() * np.sqrt(2190)
     sortino = mean_ret / downside_std if downside_std > 0 else 0
 
+    # Buy & Hold Return
+    bh_ret = (res["BuyHold"].iloc[-1] / INITIAL_CAPITAL) - 1
+
     # Save Trade Log
     tr_df = pd.DataFrame(trades)
     log_name = f"trade_log_{start_date}_{end_date}.csv"
@@ -302,6 +305,7 @@ def run_backtest_strategy(start_date, end_date):
     print(f"╠════════════════════════════════════════════════╣")
     print(f"║ Final Equity   : ${final_eq:,.2f}               ║")
     print(f"║ Total Return   : {total_ret*100:+.2f}%                  ║")
+    print(f"║ Buy & Hold Ret : {bh_ret*100:+.2f}%                  ║")
     print(f"║ Max Drawdown   : {max_dd*100:.2f}%                  ║")
     print(f"║ Sharpe Ratio   : {sharpe:.2f}                     ║")
     print(f"║ Sortino Ratio  : {sortino:.2f}                     ║")
@@ -349,5 +353,5 @@ def run_backtest_strategy(start_date, end_date):
     print(f"Saved Chart: {fname}")
 
 # Run
-run_backtest_strategy('2021-07-01', '2022-03-31')
+run_backtest_strategy('2021-01-01', '2022-03-31')
 run_backtest_strategy('2022-01-01', '2022-03-31')
