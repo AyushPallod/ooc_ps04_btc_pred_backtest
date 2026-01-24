@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# MLflow
+mlruns/
+mlflow.db
+
+# Data sets and generated CSVs
+*.csv
+
+# Generated plots and images
+*.png
+*.jpg
+*.jpeg
+
+# Logs
+*.log
+
+# System
+.DS_Store
+Thumbs.db
