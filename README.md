@@ -34,3 +34,6 @@ python run_pipeline.py
 *   **Task 2**: View `final_backtest_*.png` for Equity Curves and Drawdowns.
 *   **Logs**: Check `trade_log_*.csv` for trade-by-trade details.
 *   **MLflow**: Run `mlflow ui` to explore experiments.
+
+> [!NOTE]
+> Check project_report.md for all clear details

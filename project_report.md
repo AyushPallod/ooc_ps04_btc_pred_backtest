@@ -17,6 +17,37 @@ To predict the future movement of Bitcoin prices using a machine learning approa
   - **Training:** Data up to `2021-06-30`
   - **Testing:** `2021-07-01` to `2021-12-31`
 
+### **Feature Engineering**
+
+The model utilizes a robust set of engineered features to capture trend, momentum, volatility, and cyclicality.
+
+#### 1. Technical Indicators
+*   **Trend:**
+    *   **SMA:** 50, 200 periods
+    *   **EMA:** 12, 26, 50, 200 periods
+    *   **MACD:** EMA 12 - EMA 26 (Signal Line)
+*   **Momentum:**
+    *   **RSI:** Relative Strength Index (14-period)
+*   **Volatility:**
+    *   **ATR:** Average True Range (14-period)
+    *   **Bollinger Bands:** 20-period SMA $\pm$ 2 Standard Deviations (High & Low bands)
+
+#### 2. Volume Features
+*   **Volume Ratio:** Current Volume scaled by its 20-period Moving Average.
+
+#### 3. Return Features
+*   **Log Returns:** $\ln(P_t / P_{t-1})$ (Ensures stationarity).
+
+#### 4. Lag Features
+*   **Close_t-1, Close_t-2:** Past prices to provide autoregressive context.
+
+#### 5. Cyclical Time Features (Sine/Cosine Encoding)
+To capture temporal patterns without ordinality issues:
+*   **Hour of Day:** `hour_sin`, `hour_cos`
+*   **Day of Week:** `dow_sin`, `dow_cos`
+*   **Month of Year:** `month_sin`, `month_cos`
+*   **Weekend Flag:** Binary indicator for weekends.
+
 ### **Model Architecture & Hyperparameters**
 - **Algorithm:** XGBoost Regressor (`XGBRegressor`)
 - **Hyperparameters:**
@@ -78,25 +109,26 @@ A metric-driven strategy that combines the **Rolling ML Predictions** with **Tec
   - Price < Daily EMA 200 $\rightarrow$ **BEAR Regime**
 
 ### **Entry Logic & Position Sizing**
-
-The strategy uses a **Target Exposure** approach for both Long and Short trades, prioritizing conviction-based sizing over fixed risk per trade.
+The strategy employs two distinct sizing methods depending on the trade direction, optimizing for **Growth** in Bull markets and **Safety** in Bear markets.
 
 #### A. Long Setup (Bull Market)
 *   **Condition:** Market must be in **BULL Regime**.
 *   **Trigger:**
     *   Price crosses above **SMA 20** (or **EMA 9** in Hyper Mode).
     *   **ML Confirmation:** ML Prediction must **NOT** be Bearish (Prob > 0.4).
-*   **Position Sizing: Target Exposure**
+*   **Position Sizing: Target Exposure Method**
+    Instead of fixed risk, long trades aim for a target percentage of equity based on conviction.
     *   **Weak Bull (Prob < 0.6):** Target **50% Equity** exposure.
     *   **Strong Bull (Prob > 0.6):** Target **100% Equity** exposure.
     *   **Super Bull (Prob > 0.7):** Target **150% Equity** exposure (Leverage) [Hyper Mode Only].
+    *   *Formula:* $\text{Size} = \frac{\text{Equity} \times \text{Target Exposure}}{\text{Entry Price}}$
 
 #### B. Short Setup (Bear Market)
 *   **Condition:** Market must be in **BEAR Regime** and Shorts allowed.
 *   **Trigger:**
     *   Price breaks below **Bollinger Band Lower** (Std 2.0).
     *   **ML Confirmation:** ML Prediction must **NOT** be Bullish (Prob < 0.6).
-*   **Position Sizing: Fixed Target Exposure**
+*   **Position Sizing: Fixed Target Exposure Method**
     Shorts now utilize an aggressive exposure target rather than risk-based sizing.
     *   **Target Exposure:** Fixed at **60% Equity**.
     *   *Constraint:* Max position size capped at **80% Equity**.
@@ -141,12 +173,12 @@ The following table summarizes the strategy performance for the period of Q1 202
 
 | Metric | Result |
 | :--- | :--- |
-| **Final Equity** | **$10,918.24** |
-| **Total Return** | **+9.18%** |
+| **Final Equity** | **$10,651.11** |
+| **Total Return** | **+6.51%** |
 | **Buy & Hold Return** | -8.05% |
-| **Max Drawdown** | -4.05% |
-| **Sharpe Ratio** | 2.71 |
-| **Sortino Ratio** | 1.68 |
+| **Max Drawdown** | -2.64% |
+| **Sharpe Ratio** | 2.68 |
+| **Sortino Ratio** | 1.76 |
 | **Total Trades** | 6 |
 
 > [!NOTE]
