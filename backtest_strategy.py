@@ -351,16 +351,23 @@ def run_backtest_strategy(start_date, end_date):
         # Simple scatter using existing dates
         buys = tr_df[tr_df["action"].astype(str).str.contains("BUY")]
         shorts = tr_df[tr_df["action"].astype(str).str.contains("SHORT")]
+        covers = tr_df[tr_df["action"].astype(str).str.contains("COVER")]
+        sells = tr_df[tr_df["action"].astype(str).str.contains("SELL")]
+
         
         # Re-calc for plotting on equity curve:
         # We need equity value at that timestamp.
         # res has equity.
         valid_buys = buys.index.intersection(res.index)
         valid_shorts = shorts.index.intersection(res.index)
-        
+        valid_covers = covers.index.intersection(res.index)
+        valid_sells = sells.index.intersection(res.index)
+
         ax1.scatter(valid_buys, res.loc[valid_buys, "equity"], marker="^", color="lime", s=100, edgecolors='black', label="Buy", zorder=5)
         ax1.scatter(valid_shorts, res.loc[valid_shorts, "equity"], marker="v", color="red", s=100, edgecolors='black', label="Short", zorder=5)
-
+        ax1.scatter(valid_covers, res.loc[valid_covers, "equity"], marker="o", color="orange", s=100, edgecolors='black', label="Cover", zorder=5)
+        ax1.scatter(valid_sells, res.loc[valid_sells, "equity"], marker="o", color="purple", s=100, edgecolors='black', label="Sell", zorder=5)
+        
     ax1.set_title(f"Task 2: Strategy Equity Curve ({start_date} - {end_date})", fontsize=14, fontweight='bold')
     ax1.set_ylabel("Equity ($)")
     ax1.legend()
@@ -378,5 +385,5 @@ def run_backtest_strategy(start_date, end_date):
     print(f"Saved Chart: {fname}")
 
 # Run
-run_backtest_strategy('2021-01-01', '2022-12-31')
+# run_backtest_strategy('2021-01-01', '2022-12-31')
 run_backtest_strategy('2022-01-01', '2022-03-31')
