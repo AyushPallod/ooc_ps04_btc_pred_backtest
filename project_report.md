@@ -182,6 +182,4 @@ The following table summarizes the strategy performance for the period of Q1 202
 | **Total Trades** | 6 |
 
 > [!NOTE]
-> The strategy significantly outperformed Buy & Hold during this bearish/volatile period, achieving a positive return of 6.51% while Bitcoin declined by 8.05%.
-
-![Strategy Equity Curve](final_backtest_2022-01-01_2022-03-31.png)
+> The strategy significantly outperformed Buy & Hold during this bearish/volatile period, achieving a positive return of 9.18% while Bitcoin declined by 8.05%.
