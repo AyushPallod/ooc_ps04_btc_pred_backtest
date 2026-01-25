@@ -79,31 +79,28 @@ A metric-driven strategy that combines the **Rolling ML Predictions** with **Tec
 
 ### **Entry Logic & Position Sizing**
 
-The strategy employs two distinct sizing methods depending on the trade direction, optimizing for **Growth** in Bull markets and **Safety** in Bear markets.
+The strategy uses a **Target Exposure** approach for both Long and Short trades, prioritizing conviction-based sizing over fixed risk per trade.
 
 #### A. Long Setup (Bull Market)
 *   **Condition:** Market must be in **BULL Regime**.
 *   **Trigger:**
     *   Price crosses above **SMA 20** (or **EMA 9** in Hyper Mode).
     *   **ML Confirmation:** ML Prediction must **NOT** be Bearish (Prob > 0.4).
-*   **Position Sizing: Target Exposure Method**
-    Instead of fixed risk, long trades aim for a target percentage of equity based on conviction.
+*   **Position Sizing: Target Exposure**
     *   **Weak Bull (Prob < 0.6):** Target **50% Equity** exposure.
     *   **Strong Bull (Prob > 0.6):** Target **100% Equity** exposure.
     *   **Super Bull (Prob > 0.7):** Target **150% Equity** exposure (Leverage) [Hyper Mode Only].
-    *   *Formula:* $\text{Size} = \frac{\text{Equity} \times \text{Target Exposure}}{\text{Entry Price}}$
 
 #### B. Short Setup (Bear Market)
 *   **Condition:** Market must be in **BEAR Regime** and Shorts allowed.
 *   **Trigger:**
     *   Price breaks below **Bollinger Band Lower** (Std 2.0).
     *   **ML Confirmation:** ML Prediction must **NOT** be Bullish (Prob < 0.6).
-*   **Position Sizing: Volatility-Adjusted Risk Method**
-    Shorts utilize a defensive, risk-based approach to limit downsides.
-    *   **Risk Per Trade:** Fixed at **2%** of current Equity.
-    *   **Stop Distance:** Calculated as **2.5 x ATR** (Average True Range).
-    *   *Formula:* $\text{Size} = \frac{\text{Equity} \times 0.02}{2.5 \times \text{ATR}}$
-    *   *Constraint:* Max position size capped at **50% Equity** for safety.
+*   **Position Sizing: Fixed Target Exposure**
+    Shorts now utilize an aggressive exposure target rather than risk-based sizing.
+    *   **Target Exposure:** Fixed at **60% Equity**.
+    *   *Constraint:* Max position size capped at **80% Equity**.
+    *   *Formula:* $\text{Size} = \frac{\text{Equity} \times 0.60}{\text{Entry Price}}$
 
 ### **Risk Management**
 
@@ -120,7 +117,7 @@ The strategy employs two distinct sizing methods depending on the trade directio
 #### Pyramiding (Hyper Mode / Super Bull)
 - **Logic:** Adds to the winning position if the trend is strong and profitable.
 - **Condition:** Position is profitable (>5%) AND Leverage is < 1.0.
-- **Action:** Adds 0.5x Risk magnitude to the position.
+- **Action:** Adds a meaningful chunk to the position.
 - **Margin Boost:** If ML Probability is "Super Bull" (>0.75), additional margin is used to boost size up to 1.4x leverage.
 
 ### **Exit Logic**
@@ -144,12 +141,12 @@ The following table summarizes the strategy performance for the period of Q1 202
 
 | Metric | Result |
 | :--- | :--- |
-| **Final Equity** | **$10,651.11** |
-| **Total Return** | **+6.51%** |
+| **Final Equity** | **$10,918.24** |
+| **Total Return** | **+9.18%** |
 | **Buy & Hold Return** | -8.05% |
-| **Max Drawdown** | -2.64% |
-| **Sharpe Ratio** | 2.68 |
-| **Sortino Ratio** | 1.76 |
+| **Max Drawdown** | -4.05% |
+| **Sharpe Ratio** | 2.71 |
+| **Sortino Ratio** | 1.68 |
 | **Total Trades** | 6 |
 
 > [!NOTE]

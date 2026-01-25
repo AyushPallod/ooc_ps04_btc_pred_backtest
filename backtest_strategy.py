@@ -8,7 +8,7 @@ import matplotlib.dates as mdates
 # CONFIGURATION
 # =========================
 INITIAL_CAPITAL = 10_000.0
-RISK_PER_TRADE = 0.02       # 2% Risk
+RISK_PER_TRADE = 0.03       # 3% Risk
 LEVERAGE_CAP = 1.5          # Increased Cap for Hyper Mode
 TRANSACTION_COST = 0.002
 ALLOW_SHORTS = True
@@ -268,23 +268,27 @@ def run_backtest_strategy(start_date, end_date):
             elif regime == "BEAR" and ALLOW_SHORTS:
                 # Entry: Breakdown AND Not Bullish
                 if price < row["BB_Lower"] and not ml_bullish:
-                    # SIZING: RISK BASED (Defensive)
-                    # We don't want 100% Short exposure usually.
-                    risk_amt = equity * RISK_PER_TRADE
-                    stop_dist = 2.5 * atr
-                    size = risk_amt / stop_dist
+                    # SIZING: TARGET EXPOSURE (Aggressive for Bear Market)
+                    target_exposure = 0.60 # 60% Equity
                     
-                    # Cap at 50% Equity for Shorts
-                    max_size = (equity * 0.5) / price
+                    stop_dist = 2.5 * atr
+                    
+                    # Calculate Size based on Target Exposure
+                    val_to_sell = equity * target_exposure
+                    size = val_to_sell / price
+                    
+                    # Cap at 80% Equity (Safety)
+                    max_size = (equity * 0.8) / price
                     size = min(size, max_size)
                     
                     vol_val = size * price
                     cost = vol_val * TRANSACTION_COST
-                    cash += vol_val - cost
-                    position = -size
-                    entry_price = price
-                    stop_loss = price + stop_dist
-                    trades.append({"date": curr_date, "action": "SHORT", "price": price, "size": size, "reason": "Bear_Breakout"})
+                    if cash > cost: # Ensure we have cash for fees, though Shorts increase cash
+                        cash += vol_val - cost
+                        position = -size
+                        entry_price = price
+                        stop_loss = price + stop_dist
+                        trades.append({"date": curr_date, "action": "SHORT", "price": price, "size": size, "reason": "Bear_Breakout"})
 
         equity_curve.append({"date": curr_date, "equity": equity, "price": price, "regime": regime})
 
