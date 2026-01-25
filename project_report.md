@@ -173,13 +173,13 @@ The following table summarizes the strategy performance for the period of Q1 202
 
 | Metric | Result |
 | :--- | :--- |
-| **Final Equity** | **$10,651.11** |
-| **Total Return** | **+6.51%** |
+| **Final Equity** | **$10,918.24** |
+| **Total Return** | **+9.18%** |
 | **Buy & Hold Return** | -8.05% |
-| **Max Drawdown** | -2.64% |
-| **Sharpe Ratio** | 2.68 |
-| **Sortino Ratio** | 1.76 |
+| **Max Drawdown** | -4.05% |
+| **Sharpe Ratio** | 2.71 |
+| **Sortino Ratio** | 1.68 |
 | **Total Trades** | 6 |
 
 > [!NOTE]
-> The strategy significantly outperformed Buy & Hold during this bearish/volatile period, achieving a positive return of 9.18% while Bitcoin declined by 8.05%.
+> The strategy significantly outperformed Buy & Hold during this bearish/volatile period, achieving a positive return of 6.51% while Bitcoin declined by 8.05%.
